@@ -1,0 +1,559 @@
+
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Main page</title>
+</head>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="css/mystylesheet.css">
+ <script>
+$(document).ready(function() {
+	$("#thePage").hide();
+	$("#createPage").hide();
+	$("#searchPage").hide();
+	$("#searchTable").hide();
+	$("#ReplyWindow").hide();
+	
+	});
+</script>
+<body   ng-app="myApp" onload="onloadFunction()"   background="12e.jpg" onunload="Logoutclick()">
+<div id="loader"></div>
+<div id="website" style="display:none;" >
+	
+	<div ng-include="'LoginPage.html'" id ="MainDiv"></div>
+	
+	<div id="thePage">
+		<nav class="navbar navbar-inverse">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="#">OTC</a>
+		    </div>
+		    <ul class="nav navbar-nav">
+		      <li id="homeLi" class="active"><a href="#" id="homeclick"><span class="glyphicon glyphicon-home"></span>&nbsp Home</a></li>
+		      <li id="createChannelLi" ><a href="#"  id="createChannelclick"><span class="glyphicon glyphicon-plus"></span>&nbsp Create channel</a></li>
+		      <li id="searchChannelLi" ><a href="#"  id="searchChannelclick"><span class="glyphicon glyphicon-search"></span>&nbsp Search</a></li>
+		    </ul>
+		    
+		    <ul class="nav navbar-nav navbar-right">
+		      <li><a href="#" id="Logoutclick"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+		    </ul>
+		  </div>
+		</nav>
+		<div id="createPage" ng-controller="createChannel">
+		  <form id="createChannel" >
+		    <div class="container">
+			    <div class="well" >
+			      <label><h4>Channel name</h4></label>
+				  <div class="input-group">
+						<textarea id="channelName"  data-ng-model="channelName" placeholder="Enter channel name" class="form-control ng-pristine ng-valid"  maxlength="30" required></textarea> <span class="input-group-addon"><span data-ng-bind="nameChLength()" class="ng-binding cblack">30</span></span>
+				 </div>
+			      
+			      <label><h4>Channel description</h4></label>
+			      <div class="input-group">
+						<textarea id="channelDes"  data-ng-model="channelDescription" placeholder="Enter channel description" class="form-control ng-pristine ng-valid"  maxlength="500" required></textarea> <span class="input-group-addon"><span data-ng-bind="ChDsLength()" class="ng-binding cblack">500</span></span>
+				 </div>   
+			      <button type="submit" class="glyphicon glyphicon-plus btn btn-success" ng-click="createChannelBtn()">&nbsp Create</button>
+			    </div>
+		    </div>
+		  </form>
+		</div>
+		<div id="searchPage">
+		  <form id="searchChannelForm" >
+		    <div class="container">
+			    <div class="well" >
+			      <div class="well" >
+				      <label><h4>Enter Channel Name</h4></label>
+				      <input type="text" id="channelNameSearch" placeholder="Enter channel name" name="chnameSearch">
+				      <button class="glyphicon glyphicon-search btn btn-danger" onclick="channelNameSearchBtn()"> Search by channel name</button>
+				  </div>
+			      <div class="well" >
+				      <label><h4>Enter Nickname of user that participate in the channel </h4></label>
+				      <input type="text" id="channelNicknameSearch"  placeholder="Enter Nickname" name="chdesSearch" >    
+				      <button  class="glyphicon glyphicon-search btn btn-danger" onclick="channelNicknameSearchBtn()"> Search by Nickname of user that participate</button>
+				  </div>
+			    </div>
+		    </div>
+		  </form>
+		</div>
+		
+		<div id="searchTable">
+			<div class="container">
+				<div class="well" >
+					<h2>Result of search table</h2>
+					<div class="table-responsive"> 
+						<table class="table">
+		    				<thead>
+		      					<tr>
+		      						<th>#</th>
+							        <th>Name</th>
+							        <th>Description</th>
+							        <th>Number of users</th>
+		      					</tr>
+		    				</thead>
+		   					<tbody id="TableSearchId">
+							</tbody>
+		  				</table>
+		  			</div>
+				</div>
+			</div>
+		</div>
+		
+		<div id="homePage" class="row content" >
+			  <div class="col-sm-3 " >
+			    <div class="well" >
+			    	<div class="well" id="userDisplay"> 
+			    		<div class="media">
+			    			<div id="addUserPhoto" class="media-left"></div>
+			    			<div  class="media-body">
+			      				<h4 id="addNickName" class="media-heading"></h4>
+			      			 	<p3>connected.</p3>
+			    			</div>
+			  			</div>
+			    	</div>
+			    	<div class="panel panel-primary" id="publicChannel">
+			      		<div class="panel-heading">public channel</div>
+			      		<div class="panel-body"><ul id="publicChannelList" class="nav nav-pills nav-stacked">
+			      		</ul><br></div> 	
+			 		</div> 
+			    	<div class="panel panel-info" id="privateChannel">
+			      		<div class="panel-heading">private channel</div>
+			      		<div class="panel-body"><ul id="privateChannelList" class="nav nav-pills nav-stacked">
+			      		</ul><br></div> 
+			    	</div>
+			    </div>	
+		  	</div>  	
+			<div id="Chat" class="col-sm-5" >
+				<div class="well" >
+					<div>
+							<div class="panel panel-success" >
+								<div class="panel-heading" ><button onclick="unsubscribeChannelBtn()" class="btn btn-danger" id="unsubscribeChannelInfo">un-subscribe</button><h2 id="channelNameInfo"></h2></div>
+								<div id="channelInfo"></div>
+							</div>
+					</div>
+					<div class="well" id="msgWindow" style="overflow: scroll; width: auto; height: 350px;">
+			  		</div>
+			      	<form role="form">
+				      	<input type="text" id="MsgId"  placeholder="New Message" name="MsgInput" >
+			        	<button type="submit" onclick="sendMsgBtn()" class="btn btn-success glyphicon glyphicon-send" > &nbsp Send</button>
+			      	</form>
+			      	<br><br>
+				</div>
+			</div> 
+			<div id="ReplyWindow" class="col-sm-3 well" >
+				<div class="panel panel-warning" >
+					<div  class="panel-heading" ><button onclick="CancelBtn()" class="btn btn-danger">close.</button><h3>Reply Message window</h3><div id="TitleReplyMsg" class="hidden" ></div></div>
+				</div>
+				<div class="panel-body">
+					<div  id="ReplymsgWindow" style="overflow: scroll; width: auto; height: 250px;"></div>
+			      	<form role="form">
+				      	<input type="text" id="ReplyMsgId"  placeholder="New Message" name="MsgInput" >
+			        	<button type="submit" onclick="ReplyMsgBtn()" class="btn btn-warning glyphicon glyphicon-send" > &nbsp reply</button>
+			      	</form>
+			      	<br><br>
+			      </div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+<script src="js/onload.js" ></script>
+<script src="js/navbarclick.js" ></script>
+<script src="js/subscribe.js" ></script>
+<script src="js/channelCreate.js" ></script>
+<script src="js/search.js" ></script>
+<script src="js/login.js" ></script>
+<script src="js/sendFunctions.js" ></script>
+
+<script>
+
+function CancelBtn(){
+	document.getElementById('ReplyWindow').style.display = "none";
+}
+
+
+
+function notify(myData1) {
+	if(myData1 != ""){
+		var myData = JSON.parse(myData1);
+		if(myData.ID == "OpenPrivate"){
+			openPrivateChannelOnline(myData.NickName);
+		}else if(myData.ID == "ClosePrivate"){
+			closePrivateChannelonline(myData.NickName);
+		}else{
+			if (myData.Parent == 0 ){
+				 var channelWR = document.getElementById(myData.Channel+"Div");
+				 createMsg(myData , channelWR );
+				 currentChannel=document.getElementById('channelNameInfo').innerHTML;
+				 if(currentChannel == myData.Channel){
+					 resetNotification(myData.Channel);
+					 document.getElementById(myData.Channel+"MsgNT").innerHTML="0";
+				 }
+	  	    		var NTMsg=document.getElementById(myData.Channel+"MsgNT").innerHTML;
+	  	    		document.getElementById(myData.Channel+"MsgNT").innerHTML=Number(NTMsg)+1;
+			}else{
+				 var commWindow = document.getElementById(myData.Parent+"DivReply");
+				 createReplyMsg(myData , commWindow );
+				 var channelWR = document.getElementById(myData.Channel+"Div");
+				 createLinkReply(myData, channelWR);
+				 currentChannel=document.getElementById('channelNameInfo').innerHTML;
+				 if(currentChannel == myData.Channel){
+					 resetNotification(myData.Channel);
+					 document.getElementById(myData.Channel+"ReplyNT").innerHTML="0";
+				 }
+	  	    		var ReplyNT=document.getElementById(myData.Channel+"ReplyNT").innerHTML;
+	  	    		document.getElementById(myData.Channel+"ReplyNT").innerHTML=Number(ReplyNT)+1;
+	  	    		var NTMsg=document.getElementById(myData.Channel+"MsgNT").innerHTML;
+	  	    		document.getElementById(myData.Channel+"MsgNT").innerHTML=Number(NTMsg)+1;
+				 var idCurrentComm = document.getElementById("TitleReplyMsg").innerHTML;
+						if((idCurrentComm != myData.Parent+"DivReply") && (idCurrentComm != "") ){
+							document.getElementById(idCurrentComm+"DivReply").style.display='none';
+						}
+				 document.getElementById("TitleReplyMsg").innerHTML = myData.Parent;
+				 commWindow.setAttribute('class', 'visible');
+				 commWindow.style.display='';
+				 document.getElementById(nameChannel+"ReplyNT").innerHTML="0";
+			}
+		}
+	}
+}	
+
+
+
+function replyFun( myData){
+	
+	var commNum=document.getElementById("ReplymsgWindow").hasChildNodes();
+	var noneDiv=document.getElementById("ReplymsgWindow").contains(document.getElementById(myData+"DivReply"));
+	if(commNum){
+		var idCurrentComm = document.getElementById("TitleReplyMsg").innerHTML;
+		if(idCurrentComm != ""){
+			document.getElementById(idCurrentComm+"DivReply").style.display='none';
+		}
+	}
+	
+	if( !noneDiv){
+		var MainDiv = document.createElement("DIV");
+		MainDiv.setAttribute('id', myData+"DivReply");
+		document.getElementById('TitleReplyMsg').innerHTML= myData;
+		document.getElementById('ReplyWindow').style.display='';
+		document.getElementById('ReplymsgWindow').appendChild(MainDiv);
+	}else{
+		
+		document.getElementById(myData+"DivReply").setAttribute('class', 'visible');
+		document.getElementById(myData+"DivReply").style.display='';
+		document.getElementById('TitleReplyMsg').innerHTML= myData;
+		document.getElementById('ReplyWindow').style.display='';
+	}
+	
+	
+	//openReblyWindow(myData);
+}
+
+
+
+
+function createReplyMsg(myData , MainDiv) {
+	
+		var Div1 = document.createElement("DIV");
+		Div1.setAttribute('class', 'media');
+		Div1.setAttribute('id', myData.ID+"Div");
+		
+		var Div2 = document.createElement("DIV");
+		Div2.setAttribute('class', 'media-left');
+		
+		var Div3 = document.createElement("DIV");
+		Div3.setAttribute('class', 'media-right');
+		
+		var PhotoSender = document.createElement("IMG");
+		PhotoSender.setAttribute("class", "img-circle");
+		PhotoSender.setAttribute("height", "50");
+		PhotoSender.setAttribute("width", "50");
+		PhotoSender.setAttribute("alt", "senderPhoto");
+		
+		var Div4 = document.createElement("DIV");
+		Div4.setAttribute('class', 'media-body');
+		
+		var SenderName = document.createTextNode(myData.Sender);
+		var SenderA = document.createElement("A");
+		SenderA.setAttribute("href", "#");
+		SenderA.appendChild(SenderName);
+		SenderA.setAttribute('id', myData.Sender);
+		SenderA.onclick = function() { openPrivateChannel(this.id) };
+		
+		var reply = document.createTextNode("  Reply");
+		var newBtnRply = document.createElement("BUTTON");
+		
+		var MainReplyDiv = document.createElement("DIV");
+		MainReplyDiv.setAttribute('id', myData.ID+"DivReply");
+		MainReplyDiv.setAttribute('class', 'hidden');
+		document.getElementById('ReplymsgWindow').appendChild(MainReplyDiv);
+		newBtnRply.setAttribute('id', myData.ID);
+		
+		newBtnRply.setAttribute('class', 'btn btn-danger glyphicon glyphicon-share-alt btn-xs');
+		newBtnRply.onclick = function() { replyFun(this.id) };
+		
+		newBtnRply.appendChild(reply);
+		
+		
+		var NameH4 = document.createElement("H4");
+		NameH4.setAttribute('class', 'media-heading');
+		NameH4.appendChild(SenderA);
+		
+		var TimeI = document.createElement("I");
+		var Msg = document.createElement("P");
+		Msg.setAttribute('id', myData.ID+"TextMsg");
+		
+		Msg.appendChild(document.createTextNode(myData.Message));
+		TimeI.appendChild(document.createTextNode("  "+myData.Date_Time));
+		Msg.appendChild(TimeI);
+		var userPhotoFromServer1 = myData.Photo;
+		PhotoSender.src = userPhotoFromServer1;
+		Div4.appendChild(NameH4);
+		Div4.appendChild(Msg);
+		Div4.appendChild(newBtnRply);
+		Div2.appendChild(PhotoSender);
+		Div1.appendChild(Div2);
+		Div1.appendChild(Div4);
+		Div1.appendChild(Div3);
+		MainDiv.appendChild(Div1);
+		var element = document.getElementById("ReplymsgWindow");
+	    element.scrollTop = element.scrollHeight;
+}
+
+
+
+
+
+function createMsg(myData , MainDiv) {
+	if(myData.Parent==0){
+		var Div1 = document.createElement("DIV");
+		Div1.setAttribute('class', 'media');
+		Div1.setAttribute('id', myData.ID+"Div");
+		
+		var Div2 = document.createElement("DIV");
+		Div2.setAttribute('class', 'media-left');
+		
+		var Div3 = document.createElement("DIV");
+		Div3.setAttribute('class', 'media-right');
+		
+		var PhotoSender = document.createElement("IMG");
+		PhotoSender.setAttribute("class", "img-circle");
+		PhotoSender.setAttribute("height", "50");
+		PhotoSender.setAttribute("width", "50");
+		PhotoSender.setAttribute("alt", "senderPhoto");
+		
+		var Div4 = document.createElement("DIV");
+		Div4.setAttribute('class', 'media-body');
+		
+		var SenderName = document.createTextNode(myData.Sender);
+		var SenderA = document.createElement("A");
+		SenderA.setAttribute("href", "#");
+		SenderA.appendChild(SenderName);
+		SenderA.setAttribute('id', myData.Sender);
+		SenderA.onclick = function() { openPrivateChannel(this.id) };
+		
+		var reply = document.createTextNode("  Reply");
+		var newBtnRply = document.createElement("BUTTON");
+		newBtnRply.setAttribute('id', myData.ID);
+		var MainReplyDiv = document.createElement("DIV");
+		MainReplyDiv.setAttribute('id', myData.ID+"DivReply");
+		MainReplyDiv.setAttribute('class', 'hidden');
+		document.getElementById('ReplymsgWindow').appendChild(MainReplyDiv);
+		
+		
+		
+		newBtnRply.setAttribute('class', 'btn btn-danger glyphicon glyphicon-share-alt btn-xs');
+		newBtnRply.onclick = function() { replyFun(this.id) };
+		
+		newBtnRply.appendChild(reply);
+		
+		
+		var NameH4 = document.createElement("H4");
+		NameH4.setAttribute('class', 'media-heading');
+		NameH4.appendChild(SenderA);
+		
+		var TimeI = document.createElement("I");
+		var Msg = document.createElement("P");
+		Msg.setAttribute('id', myData.ID+"TextMsg");
+		
+		Msg.appendChild(document.createTextNode(myData.Message));
+		TimeI.appendChild(document.createTextNode("  "+myData.Date_Time));
+		Msg.appendChild(TimeI);
+		var userPhotoFromServer1 = myData.Photo;
+		PhotoSender.src = userPhotoFromServer1;
+		Div4.appendChild(NameH4);
+		Div4.appendChild(Msg);
+		Div4.appendChild(newBtnRply);
+		Div2.appendChild(PhotoSender);
+		Div1.appendChild(Div2);
+		Div1.appendChild(Div4);
+		Div1.appendChild(Div3);
+		MainDiv.appendChild(Div1);
+		var element = document.getElementById("msgWindow");
+	    element.scrollTop = element.scrollHeight;
+	}else{
+		
+		createLinkReply(myData, MainDiv);
+		var MainReplyDiv=document.getElementById(myData.Parent+"DivReply");
+		var threadDiv=document.getElementById("ReplymsgWindow").contains(document.getElementById(myData.Parent+"DivReply"));
+		if(!threadDiv){
+			var MainReplyDiv = document.createElement("DIV");
+			MainReplyDiv.setAttribute('id', myData.Parent+"DivReply");
+			MainReplyDiv.setAttribute('class', 'hidden');
+			document.getElementById('ReplymsgWindow').appendChild(MainReplyDiv);
+		}
+		createReplyMsg(myData , MainReplyDiv);
+		
+	}
+}
+function createLinkReply(myData , MainDiv){
+	var LinkReplyText = document.createTextNode(myData.Message);
+	var newLine=document.createElement("BR");
+	var LinkReply = document.createElement("A");
+	LinkReply.setAttribute("href", "#");
+	LinkReply.appendChild(LinkReplyText);
+	LinkReply.appendChild(newLine);
+	LinkReply.setAttribute('id', myData.Parent);
+	LinkReply.onclick = function() { replyFun(this.id) };
+	MainDiv.appendChild(LinkReply);
+	var element = document.getElementById("msgWindow");
+    element.scrollTop = element.scrollHeight;
+}
+
+
+</script>
+
+
+
+
+<script>
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		var app = angular.module('myApp', []);
+		app.controller('login', function($scope) {
+		    $scope.loginBtn = function loginBtn(){
+		    	var user= new Object();
+		    	//var mydata= new Object();
+		    	var result;	
+		    	user.UserName=$scope.username ;
+		    	user.Password=$scope.password ;
+		    	$.post("/OTC/LoginServlet", JSON.stringify(user), function(response) {
+		    		var myData = response;
+		    		var resultFromServer=myData.result;
+		    		if(resultFromServer == false){
+		    	    	alert("The Username or Password is incorrect");
+		    		}else if(resultFromServer == true){
+		            	loadPage(myData);
+		    		} 
+		    	});
+		    };
+		});
+		
+		
+		
+		app.controller('createChannel', function($scope) {
+			$scope.channelName = "";
+			$scope.channelDescription = "";
+			   
+			$scope.nameChLength  = function() {return 30 - $scope.channelName.length;};
+			$scope.ChDsLength  = function() {return 500 - $scope.channelDescription.length;};
+		    $scope.createChannelBtn = function createChannelBtn(){
+		    	  var channel= new Object();
+		    	  channel.Name=$scope.channelName ;
+		    	  channel.Description=$scope.channelDescription;
+		    	  var userNameCreator=document.getElementById("addNickName");
+		    	  channel.Creator=userNameCreator.innerHTML;
+		    	  var sendMsg= JSON.stringify(channel);
+		    	 
+		      	$.post("/OTC/CreateChannelServlet",sendMsg, function(response) {
+		      	    // handle response from your servlet.
+		      		var mydata = response;
+		      	    var resultFromServer=mydata.result;
+		
+		      	    if(resultFromServer == false){
+		      	    	alert("The channel Name is exists , enter another channel name");	
+		      	    }else if(resultFromServer == true){
+		      	    	alert("Successful create channel,Thank you");
+		      	    	createPublicChannelsList( mydata.channel );
+		      	    	document.getElementById('homePage').style.display='';
+		      	  		document.getElementById('createPage').style.display='none';
+		      	    }
+		      	   
+		      	}); 
+		    	};
+		    });   
+		
+		
+		app.controller('registration', function($scope) {
+			$scope.usernameRg = "";
+			$scope.passwordRg = "";
+			$scope.userNicknameRg = "";
+			$scope.shortDescripitionRg = "";
+			   
+			$scope.nameULength  = function() {return 10 - $scope.usernameRg.length;};
+			$scope.passLength  = function() {return 8 - $scope.passwordRg.length;};
+			$scope.nickNLength  = function() {return 20 - $scope.userNicknameRg.length;};
+			$scope.disLength  = function() {return 50 - $scope.shortDescripitionRg.length;};
+			$scope.registrationBtn = function registrationBtn(){
+			
+			
+		   
+		    	var user= new Object();
+		    	
+		    	user.UserName=$scope.usernameRg ;
+		    	user.Password=$scope.passwordRg ;
+		    	user.NickName=$scope.userNicknameRg;
+		
+		    	if($scope.shortDescripitionRg== null){
+		    		user.Description ="No description";
+		    	}
+		    	else {
+		    		user.Description =$scope.shortDescripitionRg;
+		    	}
+		    	if($scope.photoRg== null){
+		    		user.Photo ="Photo/photo.png";
+		    	}
+		    	else {
+		    		user.Photo =$scope.photoRg;
+		    	}
+		    	
+		  		var sendMsg= JSON.stringify(user);
+		    	$.post("/OTC/RegisterServlet",sendMsg, function(response) {
+		    	    // handle response from your servlet.
+		    		var mydata = response;
+		    	    var resultFromServer=mydata.result;
+		    	    if(resultFromServer == "exists"){
+		    	    	alert("The User Name exists , enter another user name");	
+		    	    }else if(resultFromServer == "registered"){
+		    	    	alert("Successful registration");
+		    	    	document.getElementById('id02').style.display='none';
+		    	    	var user= new Object();
+		    	    	user.UserName=$scope.usernameRg ;
+		    	    	user.Password=$scope.passwordRg ;
+		    	    	$.post("/OTC/LoginServlet", JSON.stringify(user), function(response) {
+		    	    		var myData = response;
+		    	    		var resultFromServer=myData.result;
+		    	    		if(resultFromServer == false){
+		    	    	    	alert("The Username or Password is incorrect");
+		    	    		}else if(resultFromServer == true){
+		    	            	loadPage(myData);
+		    	    		} 
+		    	    	});
+		    	    	
+		    	    	
+		    	    	
+		    	    }
+		    	});
+		    };
+		});
+
+</script>
+</body>
+</html>
